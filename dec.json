@@ -1,0 +1,9 @@
+{
+  "repository": "erp-api",
+  "front": "erp-en-efactura",
+  "task": "Construir MÓDULO CARTERA POR PAGAR",
+  "question": "¿Las devoluciones se harán estrictamente por sucursal? O pueden ser a nivel de empresa en general, escogiendo las sucursales de donde saldrá el inventario antes de hacer la devolución.",
+  "impact": "alto",
+  "origin": "claude",
+  "key": "devoluciones-alcance-sucursal-vs-empresa"
+}
