@@ -80,7 +80,7 @@
 @layer components {
   /* Etiqueta pequeña en mayúsculas, usada como ojo de sección */
   .eyebrow {
-    @apply font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground;
+    @apply font-mono text-micro font-medium uppercase tracking-[0.12em] text-muted-foreground;
   }
   .tnum {
     font-variant-numeric: tabular-nums;
@@ -95,16 +95,16 @@
     @apply mb-10 flex w-full items-end gap-8 overflow-x-auto border-b;
   }
   .tab-line {
-    @apply shrink-0 whitespace-nowrap border-b-[3px] border-transparent bg-transparent pb-3 pt-1 font-display text-[17px] text-muted-foreground transition-colors hover:text-foreground;
+    @apply shrink-0 whitespace-nowrap border-b-[3px] border-transparent bg-transparent pb-3 pt-1 font-display text-lead text-muted-foreground transition-colors hover:text-foreground;
   }
   .tab-line[data-state='active'] {
     @apply border-beam text-foreground;
   }
   .tabs-pills {
-    @apply mb-3 inline-flex gap-1 rounded-[3px] bg-secondary p-1;
+    @apply mb-3 inline-flex gap-1 rounded-md bg-secondary p-1;
   }
   .tab-pill {
-    @apply rounded-[2px] px-3 py-1.5 font-mono text-[13px] text-muted-foreground transition-colors hover:text-foreground;
+    @apply rounded-sm px-3 py-1.5 font-mono text-small text-muted-foreground transition-colors hover:text-foreground;
   }
   .tab-pill[data-state='active'] {
     @apply bg-card text-foreground shadow-sm;

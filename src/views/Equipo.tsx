@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Callout, Chip, PageHeader, Section, StatusIcon, type Tone } from '@/components/faro/bits'
 import type { TaskStatus } from '@/lib/faro'
+import { longDate } from '@/lib/format'
 
 /*
  * DEMO — vista del «dueño» (ver docs/vista-dueno.md).
@@ -147,7 +148,6 @@ const STATUS_LABEL: Record<TaskStatus, { label: string; tone: Tone }> = {
 }
 
 const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).join('')
-const longDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
 
 function Photo({ e, className }: { e: Employee; className?: string }) {
   return (
@@ -161,10 +161,10 @@ function Photo({ e, className }: { e: Employee; className?: string }) {
 function TaskRow({ t }: { t: DTask }) {
   const s = STATUS_LABEL[t.status]
   return (
-    <li className="flex items-center gap-3 rounded-[3px] border border-border bg-card px-4 py-3">
+    <li className="flex items-center gap-3 rounded-md border border-border bg-card px-4 py-3">
       <StatusIcon status={t.status} />
-      <span className={cn('min-w-0 flex-1 text-[15px]', t.status === 'hecha' && 'text-muted-foreground line-through')}>{t.title}</span>
-      {t.total ? <span className="tnum font-mono text-[11px] text-muted-foreground">{t.done}/{t.total}</span> : null}
+      <span className={cn('min-w-0 flex-1 text-body', t.status === 'hecha' && 'text-muted-foreground line-through')}>{t.title}</span>
+      {t.total ? <span className="tnum font-mono text-micro text-muted-foreground">{t.done}/{t.total}</span> : null}
       <Chip tone={s.tone}>{s.label}</Chip>
     </li>
   )
@@ -182,7 +182,7 @@ function Tarjeta({ e, onOpen }: { e: Employee; onOpen: () => void }) {
   return (
     <button
       onClick={onOpen}
-      className="group flex h-[17rem] w-full flex-col gap-5 overflow-hidden rounded-[3px] border border-border bg-card p-6 text-left transition-colors hover:border-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+      className="group flex h-[17rem] w-full flex-col gap-5 overflow-hidden rounded-md border border-border bg-card p-6 text-left transition-colors hover:border-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
     >
       <div className="flex items-center gap-5">
         <Photo e={e} className="size-24" />
@@ -237,7 +237,7 @@ function Detalle({ e, onBack }: { e: Employee; onBack: () => void }) {
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
             className={cn(
-              '-mb-px border-b-2 px-4 py-2.5 text-[15px] font-medium transition-colors',
+              '-mb-px border-b-2 px-4 py-2.5 text-body font-medium transition-colors',
               tab === t.id ? 'border-beam text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground',
             )}
           >
@@ -281,7 +281,7 @@ function Detalle({ e, onBack }: { e: Employee; onBack: () => void }) {
               <Section key={d.date} title={longDate(d.date)} aside={<span className="eyebrow">{d.achieved.length} logros</span>}>
                 <ul className="grid gap-2">
                   {d.achieved.map((a) => (
-                    <li key={a} className="flex items-center gap-3 text-[15px]"><StatusIcon status="hecha" /> {a}</li>
+                    <li key={a} className="flex items-center gap-3 text-body"><StatusIcon status="hecha" /> {a}</li>
                   ))}
                 </ul>
                 {d.note && <Callout tone="warn" className="mt-4"><p className="eyebrow mb-1">Nota para el siguiente día</p>{d.note}</Callout>}

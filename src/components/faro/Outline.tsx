@@ -103,7 +103,7 @@ export function Outline({ front, hideDone, day }: { front: Front; hideDone: bool
       </ul>
       {!roots.length && <p className="px-2 pb-2 pt-1 text-sm text-muted-foreground">{childrenOf(null, front.id).length ? 'Todo lo de este frente está terminado.' : 'Aún no hay tareas. Escribe la primera aquí abajo.'}</p>}
       <NewTaskInput front={front} ctx={ctx} />
-      <p className="mt-3 px-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
+      <p className="mt-3 px-2 font-mono text-micro leading-relaxed text-muted-foreground">
         Enter: nueva tarea · Tab: subtarea · Mayús+Tab: subir de nivel · Alt+↑/↓: mover · Ctrl+Enter: hecha · Alt+N: notas · Alt+T: tarea/texto · Esc: salir
       </p>
       <ConvertDialog task={converting} onClose={() => setConverting(null)} />
@@ -123,7 +123,7 @@ function NewTaskInput({ front, ctx }: { front: Front; ctx: Ctx }) {
         value={text}
         aria-label={`Añadir tarea al frente ${front.name}`}
         placeholder="Añadir tarea… (Enter)"
-        className="h-9 border-transparent bg-transparent text-[15px] shadow-none hover:border-border"
+        className="h-9 border-transparent bg-transparent text-body shadow-none hover:border-border"
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
@@ -245,7 +245,7 @@ function TaskRow({ task: t, ctx }: { task: Task; ctx: Ctx }) {
 
   return (
     <li>
-      <div className={cn('group flex items-start gap-0.5 rounded-[3px] px-1 py-0.5 transition-colors hover:bg-accent/40 focus-within:bg-accent/50', cancelled && 'opacity-60')}>
+      <div className={cn('group flex items-start gap-0.5 rounded-md px-1 py-0.5 transition-colors hover:bg-accent/40 focus-within:bg-accent/50', cancelled && 'opacity-60')}>
         {kids.length ? (
           <button
             type="button"
@@ -273,7 +273,7 @@ function TaskRow({ task: t, ctx }: { task: Task; ctx: Ctx }) {
             onBlur={onBlur}
             spellCheck
             className={cn(
-              'block w-full resize-none overflow-hidden rounded-[3px] border border-transparent bg-transparent px-1.5 py-[3px] font-sans text-[15px] leading-snug focus:border-ring focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring/30',
+              'block w-full resize-none overflow-hidden rounded-md border border-transparent bg-transparent px-1.5 py-[3px] font-sans text-body leading-snug focus:border-ring focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring/30',
               struck && 'text-muted-foreground line-through decoration-1',
             )}
           />
@@ -281,7 +281,7 @@ function TaskRow({ task: t, ctx }: { task: Task; ctx: Ctx }) {
             <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 px-1.5 pb-0.5">
               <TaskChips task={t} />
               {t.note && (
-                <button type="button" onClick={() => ctx.toggleDetail(t.id)} className="inline-flex min-w-0 max-w-full items-center gap-1 text-left text-[12.5px] leading-snug text-muted-foreground hover:text-foreground">
+                <button type="button" onClick={() => ctx.toggleDetail(t.id)} className="inline-flex min-w-0 max-w-full items-center gap-1 text-left text-caption leading-snug text-muted-foreground hover:text-foreground">
                   <StickyNote className="size-3 shrink-0" />
                   <span className="min-w-0 truncate">{t.note.split('\n')[0]}</span>
                 </button>
@@ -292,7 +292,7 @@ function TaskRow({ task: t, ctx }: { task: Task; ctx: Ctx }) {
         {prog && (
           <span className="mt-1.5 flex shrink-0 items-center gap-2" title={`${prog.done} de ${prog.total} hechas`}>
             <Progress value={prog.total ? Math.round((prog.done / prog.total) * 100) : 0} className="hidden w-14 sm:block" aria-label={`${prog.done} de ${prog.total} hechas`} />
-            <span className="tnum font-mono text-[11.5px] text-muted-foreground">
+            <span className="tnum font-mono text-micro text-muted-foreground">
               {prog.done}/{prog.total}
             </span>
           </span>
@@ -331,7 +331,7 @@ function RowMenu({ task: t, ctx, onRemove, onKind }: { task: Task; ctx: Ctx; onR
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuItem onSelect={() => ctx.toggleDetail(t.id)}>
           <Pencil className="mr-2 size-4" /> Detalle y notas
-          <span className="ml-auto pl-3 font-mono text-[11px] text-muted-foreground">Alt+N</span>
+          <span className="ml-auto pl-3 font-mono text-micro text-muted-foreground">Alt+N</span>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => (ctx.focus.current = addTask(t.frontId, t.id, ''))}>
           <ListPlus className="mr-2 size-4" /> Añadir subtarea
@@ -377,7 +377,7 @@ function RowMenu({ task: t, ctx, onRemove, onKind }: { task: Task; ctx: Ctx; onR
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onKind}>
           {isText ? <ListTodo className="mr-2 size-4" /> : <Type className="mr-2 size-4" />} {isText ? 'Convertir en tarea' : 'Convertir en texto'}
-          <span className="ml-auto pl-3 font-mono text-[11px] text-muted-foreground">Alt+T</span>
+          <span className="ml-auto pl-3 font-mono text-micro text-muted-foreground">Alt+T</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={act(() => indentTask(t.id))}>Sangrar (subtarea)</DropdownMenuItem>
@@ -419,7 +419,7 @@ function TaskDetail({ task: t, ctx }: { task: Task; ctx: Ctx }) {
   }
 
   return (
-    <div className="mb-2 ml-[34px] mt-1 grid gap-5 rounded-[3px] border bg-card p-4">
+    <div className="mb-2 ml-[34px] mt-1 grid gap-5 rounded-md border bg-card p-4">
       <Field label="Nota">
         <Textarea
           value={t.note}

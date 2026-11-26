@@ -18,7 +18,7 @@ export function TaskKind({ task: t }: { task: Task }) {
   return (
     <HoverCard openDelay={80} closeDelay={60}>
       <HoverCardTrigger asChild>
-        <button type="button" aria-label={label} title={label} className="rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+        <button type="button" aria-label={label} title={label} className="rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
           <Chip>
             <CornerDownRight className="size-3" />
             Subtarea{chain.length > 1 ? ` · nivel ${chain.length + 1}` : ''}
@@ -47,7 +47,7 @@ export function DayTask({ task: t, onRemove, sort }: { task: Task; onRemove?: ()
     <li
       {...sort?.li}
       className={cn(
-        'animate-rise flex items-center gap-2.5 rounded-[3px] border border-l-[3px] bg-card px-3 py-2.5',
+        'animate-rise flex items-center gap-2.5 rounded-md border border-l-[3px] bg-card px-3 py-2.5',
         t.parentId ? 'border-l-tide/50' : 'border-l-ink',
         sort?.dragging && 'opacity-40',
         sort?.over && 'border-t-2 border-t-beam',
@@ -58,12 +58,12 @@ export function DayTask({ task: t, onRemove, sort }: { task: Task; onRemove?: ()
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <TaskKind task={t} />
-          <span className="font-mono text-[11.5px] text-muted-foreground">{frontOfTask(t)?.name ?? '—'}</span>
+          <span className="font-mono text-micro text-muted-foreground">{frontOfTask(t)?.name ?? '—'}</span>
           {t.status !== 'pendiente' && t.status !== 'hecha' && (
             <Chip tone={t.status === 'curso' ? 'beam' : t.status === 'bloqueada' ? 'danger' : 'neutral'}>{STATUSES[t.status]}</Chip>
           )}
         </div>
-        <p className={cn('mt-0.5 text-[15px] font-semibold leading-snug', dim && 'text-muted-foreground line-through decoration-1')}>{t.title || '(sin título)'}</p>
+        <p className={cn('mt-0.5 text-body font-semibold leading-snug', dim && 'text-muted-foreground line-through decoration-1')}>{t.title || '(sin título)'}</p>
       </div>
       {onRemove && (
         <Button type="button" variant="ghost" size="icon" aria-label={`Quitar «${t.title}»`} onClick={onRemove} className="size-8 shrink-0 text-muted-foreground">

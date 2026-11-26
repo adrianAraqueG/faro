@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { toast } from 'sonner'
+import { api } from './api'
 import type { OutlineGroup } from './outline'
 
 /*
@@ -88,7 +89,7 @@ export type Week = Partial<Record<WeekField, string>>
 /** Una reunión: notas libres con fecha; el historial se conserva (la más reciente primero). */
 export type Meeting = { id: string; title: string; date: string; text: string; created: string; updated: string }
 export type Db = {
-  v: 10
+  v: number
   fronts: Front[]
   tasks: Task[]
   decisions: Decision[]
@@ -173,11 +174,6 @@ const subscribe = (l: () => void) => {
   return () => listeners.delete(l)
 }
 
-async function api<T>(path: string, init?: RequestInit): Promise<{ status: number; body: T }> {
-  const r = await fetch(path, { ...init, headers: { 'Content-Type': 'application/json', ...init?.headers } })
-  const body = (await r.json().catch(() => ({}))) as T
-  return { status: r.status, body }
-}
 type Remote = { rev: number; db: Db; file: string; error?: string | null }
 function apply(r: Remote) {
   // Tras una actualización de FARO el servidor puede migrar los datos mientras esta pestaña sigue con el código viejo.

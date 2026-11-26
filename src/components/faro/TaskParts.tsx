@@ -60,7 +60,7 @@ export function ReviewBanner({ task: t }: { task: Task }) {
   const dec = decisionOf(t)
   if (!t.needsReview) return null
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[3px] bg-danger-soft px-3 py-2 text-sm leading-snug text-danger">
+    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-md bg-danger-soft px-3 py-2 text-sm leading-snug text-danger">
       <ScanSearch className="size-4 shrink-0" />
       <span className="min-w-0 flex-1">
         {dec ? (
@@ -91,7 +91,7 @@ export function TaskChips({ task: t }: { task: Task }) {
       {t.needsReview && <Chip tone="danger">requiere revisión</Chip>}
       {dec && <Chip tone={dec.state === 'resuelta' ? 'ok' : dec.state === 'abierta' ? 'warn' : 'beam'}>{dec.code}</Chip>}
       {repo && (
-        <span className={cn('inline-flex items-center gap-1 font-mono text-[11.5px] text-muted-foreground', !t.projectId && 'italic')} title={t.projectId ? 'Repositorio de esta tarea' : 'Repositorio heredado de una tarea superior'}>
+        <span className={cn('inline-flex items-center gap-1 font-mono text-micro text-muted-foreground', !t.projectId && 'italic')} title={t.projectId ? 'Repositorio de esta tarea' : 'Repositorio heredado de una tarea superior'}>
           <FolderGit2 className="size-3" />
           {repo.name}
         </span>

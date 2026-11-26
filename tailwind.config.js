@@ -12,6 +12,14 @@ module.exports = {
         sans: ['"Instrument Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
+      // Escala tipográfica de FARO (sin interlineado propio, hereda el del contexto). Para texto corriente usa también text-sm/base/xl… de Tailwind.
+      fontSize: {
+        micro: '11px',
+        caption: '12px',
+        small: '13px',
+        body: '15px',
+        lead: '17px',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

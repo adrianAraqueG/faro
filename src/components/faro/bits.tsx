@@ -32,7 +32,7 @@ export function Section({
         <h2 className="font-display text-2xl font-semibold">{title}</h2>
         {aside}
       </div>
-      {hint && <p className="-mt-3 mb-6 max-w-prose text-[15px] leading-relaxed text-muted-foreground">{hint}</p>}
+      {hint && <p className="-mt-3 mb-6 max-w-prose text-body leading-relaxed text-muted-foreground">{hint}</p>}
       {children}
     </section>
   )
@@ -64,7 +64,7 @@ export function Chip({ tone = 'neutral', children, className }: { tone?: Tone; c
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 whitespace-nowrap rounded-[2px] px-1.5 py-[3px] font-mono text-[10.5px] font-medium uppercase leading-none tracking-[0.06em]',
+        'inline-flex items-center gap-1 whitespace-nowrap rounded-sm px-1.5 py-[3px] font-mono text-micro font-medium uppercase leading-none tracking-[0.06em]',
         tones[tone],
         className,
       )}
@@ -92,11 +92,11 @@ export function Callout({ tone = 'tide', children, className }: { tone?: 'tide' 
     ok: 'border-ok bg-ok-soft text-ok',
     danger: 'border-danger bg-danger-soft text-danger',
   }[tone]
-  return <div className={cn('rounded-r-[3px] border-l-[3px] px-4 py-3 text-[15px] leading-relaxed', t, className)}>{children}</div>
+  return <div className={cn('rounded-r-md border-l-[3px] px-4 py-3 text-body leading-relaxed', t, className)}>{children}</div>
 }
 
 export function Empty({ children }: { children: ReactNode }) {
-  return <div className="hatch rounded-[3px] border border-dashed px-5 py-10 text-center text-[15px] text-muted-foreground">{children}</div>
+  return <div className="hatch rounded-md border border-dashed px-5 py-10 text-center text-body text-muted-foreground">{children}</div>
 }
 
 /** Selector con opciones planas o agrupadas. `''` se mapea a un valor centinela (Radix no admite vacío). */
@@ -131,7 +131,7 @@ export function Pick({
           ))}
           {groups?.map((g) => (
             <div key={g.label}>
-              <div className="px-2 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground">{g.label}</div>
+              <div className="px-2 py-1.5 font-mono text-micro uppercase tracking-[0.1em] text-muted-foreground">{g.label}</div>
               {g.options.map((o) => (
                 <SelectItem key={o.value} value={o.value}>
                   {o.label}

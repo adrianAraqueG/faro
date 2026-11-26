@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { getAgentInstructions } from '@/lib/api'
 import { useDialogs } from '@/lib/dialogs'
 import {
   addLink, addProject, decisionFront, effectiveProjectId, isCancelled, isLeaf, isOpenDecision, removeLink, removeProject, updateProject, useFaro,
@@ -18,9 +19,7 @@ function useCopyInstructions() {
   const { copyText } = useDialogs()
   return async (project?: string) => {
     try {
-      const r = await fetch('/api/agent/instructions' + (project ? `?project=${encodeURIComponent(project)}` : ''))
-      if (!r.ok) throw new Error()
-      copyText(await r.text())
+      copyText(await getAgentInstructions(project))
     } catch {
       toast.error('No se pudieron obtener las instrucciones')
     }
@@ -56,7 +55,7 @@ export function Repositorios({ go }: { go: (tab: string) => void }) {
         <aside className="grid content-start gap-16">
           <Section title="Configurar un repositorio nuevo">
             <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-              La guía te lleva paso a paso (frente, repositorio, <code className="font-mono text-[12px]">AGENTS.md</code>, <code className="font-mono text-[12px]">docs/</code>), muestra tu estado de configuración y tiene un ejemplo de repositorio ya conectado.
+              La guía te lleva paso a paso (frente, repositorio, <code className="font-mono text-caption">AGENTS.md</code>, <code className="font-mono text-caption">docs/</code>), muestra tu estado de configuración y tiene un ejemplo de repositorio ya conectado.
             </p>
             <Button variant="beam" onClick={() => go('guia')}>
               <BookOpen /> Abrir la guía de inicio
@@ -64,12 +63,12 @@ export function Repositorios({ go }: { go: (tab: string) => void }) {
           </Section>
           <Section title="Agentes de IA">
             <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-              Cualquier agente (Claude, Codex u otro) registra y consulta decisiones por el endpoint local de FARO. Pega estas instrucciones en el <code className="font-mono text-[12px]">AGENTS.md</code> del repo; si el agente lee otro archivo, pégalas allí.
+              Cualquier agente (Claude, Codex u otro) registra y consulta decisiones por el endpoint local de FARO. Pega estas instrucciones en el <code className="font-mono text-caption">AGENTS.md</code> del repo; si el agente lee otro archivo, pégalas allí.
             </p>
             <Button variant="outline" onClick={() => void copyInstructions()}>
               <ClipboardCopy /> Copiar instrucciones
             </Button>
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 text-small leading-relaxed text-muted-foreground">
               Cada repositorio tiene su botón con el nombre y los frentes ya rellenados. Los agentes <b className="font-semibold text-foreground">proponen</b>; tú resuelves en «Dudas y decisiones».
             </p>
           </Section>
@@ -79,11 +78,11 @@ export function Repositorios({ go }: { go: (tab: string) => void }) {
                 Al registrar una tarea con repositorio o una decisión, FARO crea solo el <b className="font-semibold text-foreground">vínculo repositorio × frente</b>.
               </li>
               <li>
-                Cada vínculo corresponde a la carpeta <code className="rounded-[2px] bg-secondary px-1 font-mono text-[12px]">docs/&lt;slug-del-frente&gt;/</code> dentro del repositorio.
+                Cada vínculo corresponde a la carpeta <code className="rounded-sm bg-secondary px-1 font-mono text-caption">docs/&lt;slug-del-frente&gt;/</code> dentro del repositorio.
               </li>
               <li>Un repositorio puede tener varios frentes y un frente puede estar en varios repositorios.</li>
             </ul>
-            <Callout className="mt-4 text-[13px]">
+            <Callout className="mt-4 text-small">
               Las decisiones se guardan en FARO, no en los archivos del repo. Los docs de <code className="font-mono">docs/&lt;slug&gt;/</code> solo mencionan su código, como <code className="font-mono">DEC-0007</code>.
             </Callout>
           </Section>
@@ -131,7 +130,7 @@ function RepositorioSeccion({ project: p, onEdit }: { project: Project; onEdit: 
         </span>
       }
     >
-      <p className="-mt-3 mb-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-[12px] text-muted-foreground">
+      <p className="-mt-3 mb-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-caption text-muted-foreground">
         <span className="inline-flex items-center gap-1.5 break-all">
           <FolderGit2 className="size-3.5 shrink-0" />
           {p.path || 'Sin ruta'}
@@ -153,7 +152,7 @@ function RepositorioSeccion({ project: p, onEdit }: { project: Project; onEdit: 
             <div key={l.id} className="border-l-2 border-border pl-5">
               <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <h3 className="font-display text-lg font-semibold">{fr.name}</h3>
-                <code className="rounded-[2px] bg-secondary px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">docs/{fr.slug}/</code>
+                <code className="rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-micro text-muted-foreground">docs/{fr.slug}/</code>
                 <Button
                   size="xs"
                   variant="ghost"
@@ -246,7 +245,7 @@ function RepositorioForm({ editing, onClose }: { editing: Project | 'nuevo'; onC
         <Input id="pj-name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="erp-api" />
       </Field>
       <Field label="Ruta del repositorio en tu PC" htmlFor="pj-path">
-        <Input id="pj-path" value={path} onChange={(e) => setPath(e.target.value)} placeholder={'C:\\Dev\\erp-api'} className="font-mono text-[13px]" />
+        <Input id="pj-path" value={path} onChange={(e) => setPath(e.target.value)} placeholder={'C:\\Dev\\erp-api'} className="font-mono text-small" />
       </Field>
       <DialogFooter className="gap-2 sm:gap-2">
         <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>

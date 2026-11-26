@@ -99,7 +99,7 @@ export function DialogsProvider({ children }: { children: ReactNode }) {
                 <Textarea
                   data-dialog-field
                   aria-label={opts?.title}
-                  className="min-h-40 font-mono text-[13px]"
+                  className="min-h-40 font-mono text-small"
                   value={value}
                   readOnly={f.readonly}
                   placeholder={f.placeholder}

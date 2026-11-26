@@ -6,10 +6,10 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { useDialogs } from '@/lib/dialogs'
+import { dateTime, num, shortDate } from '@/lib/format'
 import { addMeeting, deleteMeeting, iso, updateMeeting, useFaro, type Meeting } from '@/lib/faro'
 import { Empty, Field, PageHeader } from '@/components/faro/bits'
 
-const shortDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
 const wordCount = (t: string) => (t.trim() ? t.trim().split(/\s+/).length : 0)
 const isBlank = (m: Meeting) => !m.title.trim() && !m.text.trim()
 
@@ -75,13 +75,13 @@ export function Reuniones() {
                       onClick={() => open(m.id)}
                       aria-current={on ? 'true' : undefined}
                       className={cn(
-                        'relative w-full rounded-[3px] border px-4 py-3 text-left transition-colors',
+                        'relative w-full rounded-md border px-4 py-3 text-left transition-colors',
                         on ? 'border-ink bg-card' : 'border-border bg-card/60 hover:border-ink/50 hover:bg-card',
                       )}
                     >
-                      <span aria-hidden className={cn('absolute inset-y-1.5 left-0 w-[3px] rounded-r-[2px]', on ? 'bg-beam' : 'bg-transparent')} />
+                      <span aria-hidden className={cn('absolute inset-y-1.5 left-0 w-[3px] rounded-r-sm', on ? 'bg-beam' : 'bg-transparent')} />
                       <span className="block truncate font-display text-base font-semibold leading-snug">{m.title.trim() || 'Reunión sin título'}</span>
-                      <span className="tnum mt-0.5 block font-mono text-[11px] text-muted-foreground">
+                      <span className="tnum mt-0.5 block font-mono text-micro text-muted-foreground">
                         {shortDate(m.date)} · {wordCount(m.text)} palabras
                       </span>
                     </button>
@@ -98,7 +98,7 @@ export function Reuniones() {
                   <Input id="meetingTitle" value={current.title} onChange={(e) => updateMeeting(current.id, { title: e.target.value })} placeholder="Ej.: Revisión semanal con el PO" />
                 </Field>
                 <Field label="Fecha" htmlFor="meetingDate">
-                  <Input id="meetingDate" type="date" value={current.date} onChange={(e) => e.target.value && updateMeeting(current.id, { date: e.target.value })} className="w-auto font-mono text-[13px]" />
+                  <Input id="meetingDate" type="date" value={current.date} onChange={(e) => e.target.value && updateMeeting(current.id, { date: e.target.value })} className="w-auto font-mono text-small" />
                 </Field>
               </div>
 
@@ -125,8 +125,8 @@ export function Reuniones() {
                     <Trash2 /> Eliminar
                   </Button>
                 </div>
-                <p className="tnum font-mono text-[11px] text-muted-foreground">
-                  {wordCount(current.text).toLocaleString('es-CO')} palabras · editada {new Date(current.updated).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}
+                <p className="tnum font-mono text-micro text-muted-foreground">
+                  {num(wordCount(current.text))} palabras · editada {dateTime(current.updated)}
                 </p>
               </div>
             </section>

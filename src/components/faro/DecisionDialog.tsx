@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { useDialogs } from '@/lib/dialogs'
+import { dateTime } from '@/lib/format'
 import {
   DECISION_STATES, OUTCOMES, decisionTask, decisionFront, decisionProjects, removeDecision, reopenDecision, resolveDecision,
   setAssumption, setContext, setDecisionScope, setImpact, setQuestion, taskPath, useFaro, type Decision, type Impact, type Outcome,
@@ -23,11 +24,11 @@ export function AssumptionBlock({ decision: d }: { decision: Decision }) {
   return (
     <div
       className={cn(
-        'rounded-r-[3px] border-l-[3px] px-3.5 py-2.5',
+        'rounded-r-md border-l-[3px] px-3.5 py-2.5',
         d.state === 'resuelta' ? 'border-border bg-secondary/60 text-muted-foreground' : 'border-beam bg-beam-soft text-beam-ink',
       )}
     >
-      <p className="mb-1 flex items-center gap-1.5 text-[13px] font-semibold">
+      <p className="mb-1 flex items-center gap-1.5 text-small font-semibold">
         <Lightbulb className="size-3.5" />
         {d.state !== 'resuelta'
           ? 'Supuesto · avanzamos con esto'
@@ -37,14 +38,14 @@ export function AssumptionBlock({ decision: d }: { decision: Decision }) {
               ? 'Supuesto confirmado por el PO'
               : 'Supuesto'}
       </p>
-      <p className={cn('whitespace-pre-wrap text-[15px] font-medium leading-snug', d.outcome === 'cambia' && 'line-through decoration-1')}>{d.assumption}</p>
+      <p className={cn('whitespace-pre-wrap text-body font-medium leading-snug', d.outcome === 'cambia' && 'line-through decoration-1')}>{d.assumption}</p>
     </div>
   )
 }
 
 /** Etiqueta de un bloque de la ficha: frase normal, sin mayúsculas. */
 const Label = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <h3 className={cn('text-[13px] font-semibold text-muted-foreground', className)}>{children}</h3>
+  <h3 className={cn('text-small font-semibold text-muted-foreground', className)}>{children}</h3>
 )
 
 /** Un dato de texto que se lee y se edita en el mismo sitio (Editar → caja → Guardar). */
@@ -94,11 +95,11 @@ function EditableText({
         </div>
       ) : asTitle ? (
         <div className="flex items-start justify-between gap-3">
-          <DialogTitle className="text-[26px] font-semibold leading-[1.15]">{value}</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold leading-[1.15]">{value}</DialogTitle>
           {editBtn}
         </div>
       ) : value ? (
-        (render ?? <p className={cn('max-w-[65ch] whitespace-pre-wrap text-[15px] leading-relaxed', textClass)}>{value}</p>)
+        (render ?? <p className={cn('max-w-[65ch] whitespace-pre-wrap text-body leading-relaxed', textClass)}>{value}</p>)
       ) : (
         <p className="max-w-[65ch] text-sm italic text-muted-foreground">{placeholder}</p>
       )}
@@ -135,7 +136,7 @@ export function DecisionDialog({ decision: d, open, onOpenChange }: { decision: 
           <div className="grid gap-x-9 gap-y-8 p-6 sm:p-9 md:grid-cols-[minmax(0,1fr)_17rem]">
             <div className="grid min-w-0 content-start gap-7">
               <header className="grid gap-2.5 pr-8">
-                <p className="font-mono text-[12px] text-muted-foreground">{d.code} · registrada el {d.created}</p>
+                <p className="font-mono text-caption text-muted-foreground">{d.code} · registrada el {d.created}</p>
                 <EditableText label="Pregunta" value={d.question} placeholder="La duda para el PO" required asTitle onSave={(v) => setQuestion(d.id, v)} />
               </header>
 
@@ -156,14 +157,14 @@ export function DecisionDialog({ decision: d, open, onOpenChange }: { decision: 
                 />
               )}
               {d.resolution && (
-                <section className="rounded-r-[3px] border-l-[3px] border-ok bg-ok-soft/50 px-3.5 py-3">
-                  <h3 className="mb-1 text-[13px] font-semibold text-ok">Decisión del PO</h3>
-                  <p className="max-w-[65ch] whitespace-pre-wrap text-[15px] leading-relaxed">{d.resolution}</p>
+                <section className="rounded-r-md border-l-[3px] border-ok bg-ok-soft/50 px-3.5 py-3">
+                  <h3 className="mb-1 text-small font-semibold text-ok">Decisión del PO</h3>
+                  <p className="max-w-[65ch] whitespace-pre-wrap text-body leading-relaxed">{d.resolution}</p>
                 </section>
               )}
             </div>
 
-            <aside className="grid content-start gap-6 self-start rounded-[3px] bg-secondary/50 p-4">
+            <aside className="grid content-start gap-6 self-start rounded-md bg-secondary/50 p-4">
               <div className="grid gap-2">
                 <Label>Estado</Label>
                 <div className="flex flex-wrap gap-1.5">
@@ -194,9 +195,9 @@ export function DecisionDialog({ decision: d, open, onOpenChange }: { decision: 
                     <MapPin /> Cambiar
                   </Button>
                 </div>
-                <p className="font-mono text-[12.5px] leading-snug">{front ? [front.name, ...(task ? taskPath(task) : [])].join(' › ') : 'Sin frente'}</p>
+                <p className="font-mono text-caption leading-snug">{front ? [front.name, ...(task ? taskPath(task) : [])].join(' › ') : 'Sin frente'}</p>
                 {projects.length > 0 && (
-                  <p className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground">
+                  <p className="inline-flex items-center gap-1.5 font-mono text-caption text-muted-foreground">
                     <FolderGit2 className="size-3.5 shrink-0" />
                     {projects.map((p, i) => (i === 0 ? p.name : `+ ${p.name}`)).join(' ')}
                   </p>
@@ -215,7 +216,7 @@ export function DecisionDialog({ decision: d, open, onOpenChange }: { decision: 
               )}
 
               <Collapsible open={logOpen} onOpenChange={setLogOpen}>
-                <CollapsibleTrigger className="group -ml-1 flex items-center gap-1 rounded-[3px] px-1 py-0.5 text-[13px] font-semibold text-muted-foreground transition-colors hover:text-foreground">
+                <CollapsibleTrigger className="group -ml-1 flex items-center gap-1 rounded-md px-1 py-0.5 text-small font-semibold text-muted-foreground transition-colors hover:text-foreground">
                   <ChevronRight className="size-3.5 transition-transform group-data-[state=open]:rotate-90" />
                   Historial
                   <span className="tnum ml-1 font-mono font-normal">{d.log.length}</span>
@@ -223,10 +224,10 @@ export function DecisionDialog({ decision: d, open, onOpenChange }: { decision: 
                 <CollapsibleContent>
                   <ol className="mt-2.5 grid gap-2 border-l border-border pl-3">
                     {[...d.log].reverse().map((e, i) => (
-                      <li key={i} className="grid gap-0.5 text-[13px] leading-snug">
+                      <li key={i} className="grid gap-0.5 text-small leading-snug">
                         <span className="flex flex-wrap items-center gap-x-2">
                           <Chip tone={stateTone[e.state]}>{DECISION_STATES[e.state]}</Chip>
-                          <time className="tnum font-mono text-[11.5px] text-muted-foreground">{new Date(e.at).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}</time>
+                          <time className="tnum font-mono text-micro text-muted-foreground">{dateTime(e.at)}</time>
                         </span>
                         {e.note && <span className="text-muted-foreground">{e.note}</span>}
                       </li>
@@ -291,7 +292,7 @@ export function ResolveDialog({ decision: d, open, onOpenChange }: { decision: D
               <legend className="mb-1 text-sm font-semibold">Tu supuesto era: «{d.assumption}»</legend>
               <RadioGroup value={outcome} onValueChange={(v) => setOutcome(v as Outcome)} className="gap-2.5">
                 {(Object.keys(OUTCOMES) as Outcome[]).map((k) => (
-                  <label key={k} className={cn('flex cursor-pointer items-start gap-3 rounded-[3px] border px-3.5 py-3 transition-colors', outcome === k ? 'border-ring bg-beam-soft/60' : 'bg-card hover:bg-accent/50')}>
+                  <label key={k} className={cn('flex cursor-pointer items-start gap-3 rounded-md border px-3.5 py-3 transition-colors', outcome === k ? 'border-ring bg-beam-soft/60' : 'bg-card hover:bg-accent/50')}>
                     <RadioGroupItem value={k} className="mt-0.5" />
                     <span className="text-sm leading-snug">
                       <b className="font-semibold">{OUTCOMES[k]}</b>

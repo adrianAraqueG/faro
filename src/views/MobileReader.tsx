@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Markdown } from '@/components/faro/Markdown'
 import { Button } from '@/components/ui/button'
+import { getReader } from '@/lib/api'
+import { dateTimeFull } from '@/lib/format'
 
 export function MobileReader() {
   const [text, setText] = useState('')
@@ -14,9 +16,8 @@ export function MobileReader() {
     setError('')
     try {
       const token = window.location.pathname.split('/')[2]
-      const response = await fetch(`/api/reader/${token}`, { cache: 'no-store' })
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error)
+      const { ok, body: data } = await getReader(token)
+      if (!ok) throw new Error(data.error)
       setText(data.text)
       setUpdatedAt(data.updatedAt)
     } catch (e) {
@@ -37,7 +38,7 @@ export function MobileReader() {
     <main className="mx-auto min-h-dvh max-w-4xl px-4 py-6 sm:px-8">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <div><p className="font-display text-xl font-semibold">FARO · Lectura móvil</p>
-          <p className="text-xs text-muted-foreground">{updatedAt ? `Actualizado: ${new Date(updatedAt).toLocaleString('es-CO')}` : 'Documento compartido por Wi-Fi'}</p></div>
+          <p className="text-xs text-muted-foreground">{updatedAt ? `Actualizado: ${dateTimeFull(updatedAt)}` : 'Documento compartido por Wi-Fi'}</p></div>
         <Button variant="outline" disabled={busy} onClick={() => void refresh()}>{busy ? 'Cargando…' : 'Actualizar contenido'}</Button>
       </header>
       {error && <p role="alert" className="mb-5 rounded border p-4 text-sm">{error}{text && ' Puedes seguir leyendo el contenido que ya cargaste.'}</p>}

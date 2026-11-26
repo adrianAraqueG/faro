@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import { DialogsProvider, useDialogs } from '@/lib/dialogs'
+import { timeOfDay } from '@/lib/format'
 import { exportData, importBackup, iso, isCancelled, isOpenDecision, loadFaro, readBackup, startSync, useFaro } from '@/lib/faro'
 import { Hoy } from '@/views/Hoy'
 import { Frentes } from '@/views/Frentes'
@@ -121,15 +122,15 @@ function Shell() {
         onClick={() => go(n.id)}
         aria-current={on ? 'page' : undefined}
         className={cn(
-          'group relative flex w-full items-center gap-3 rounded-[3px] px-3.5 py-3 text-left text-[15px] transition-colors [&_svg]:size-[18px] [&_svg]:shrink-0',
+          'group relative flex w-full items-center gap-3 rounded-md px-3.5 py-3 text-left text-body transition-colors [&_svg]:size-[18px] [&_svg]:shrink-0',
           on ? 'bg-rail-line text-rail-foreground' : 'text-rail-muted hover:bg-rail-line/60 hover:text-rail-foreground',
         )}
       >
-        <span aria-hidden className={cn('absolute inset-y-1.5 left-0 w-[3px] rounded-r-[2px] transition-colors', on ? 'bg-beam' : 'bg-transparent')} />
+        <span aria-hidden className={cn('absolute inset-y-1.5 left-0 w-[3px] rounded-r-sm transition-colors', on ? 'bg-beam' : 'bg-transparent')} />
         {n.icon}
         <span className="flex-1 font-medium">{n.label}</span>
         {n.count ? (
-          <span className={cn('tnum rounded-[2px] px-1.5 py-0.5 font-mono text-[11px] leading-none', n.alert ? 'bg-danger text-white' : 'bg-rail-line text-rail-foreground')}>
+          <span className={cn('tnum rounded-sm px-1.5 py-0.5 font-mono text-micro leading-none', n.alert ? 'bg-danger text-white' : 'bg-rail-line text-rail-foreground')}>
             {n.count}
           </span>
         ) : null}
@@ -157,7 +158,7 @@ function Shell() {
       : save.kind === 'saving'
         ? 'Guardando…'
         : save.at
-          ? `Guardado · ${save.at.toLocaleTimeString('es-CO')}`
+          ? `Guardado · ${timeOfDay(save.at)}`
           : 'Datos cargados del servidor'
 
   return (
@@ -168,7 +169,7 @@ function Shell() {
           <Mark className="size-9 text-rail-foreground" />
           <div className="leading-none">
             <p className="font-display text-[28px] font-semibold lowercase tracking-[-0.03em]">faro</p>
-            <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-rail-muted">v3.0 · ejecución personal</p>
+            <p className="mt-1.5 font-mono text-micro uppercase tracking-[0.14em] text-rail-muted">v3.0 · ejecución personal</p>
           </div>
         </div>
 
@@ -189,7 +190,7 @@ function Shell() {
                               aria-expanded={isOpen}
                               aria-controls={`menu-${g.id}`}
                               className={cn(
-                                'flex w-full items-center gap-3 rounded-[3px] px-3.5 py-3 text-left text-[15px] transition-colors hover:bg-rail-line/60 hover:text-rail-foreground [&_svg]:size-[18px] [&_svg]:shrink-0',
+                                'flex w-full items-center gap-3 rounded-md px-3.5 py-3 text-left text-body transition-colors hover:bg-rail-line/60 hover:text-rail-foreground [&_svg]:size-[18px] [&_svg]:shrink-0',
                                 groupOf(tab) === g.id && !isOpen ? 'text-rail-foreground' : 'text-rail-muted',
                               )}
                             >
@@ -217,7 +218,7 @@ function Shell() {
         </nav>
 
         <div className="border-t border-rail-line px-5 py-4">
-          <div role="status" title={file} className="mb-3 flex items-start gap-2 text-[12px] leading-snug text-rail-muted">
+          <div role="status" title={file} className="mb-3 flex items-start gap-2 text-caption leading-snug text-rail-muted">
             {save.kind !== 'error' ? (
               <span aria-hidden className="mt-1 size-1.5 shrink-0 rounded-full bg-ok-soft" />
             ) : (
@@ -226,10 +227,10 @@ function Shell() {
             {status}
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <button onClick={exportData} className="flex items-center justify-center gap-1.5 rounded-[3px] border border-rail-line px-2 py-2 text-[12.5px] text-rail-foreground transition-colors hover:bg-rail-line">
+            <button onClick={exportData} className="flex items-center justify-center gap-1.5 rounded-md border border-rail-line px-2 py-2 text-caption text-rail-foreground transition-colors hover:bg-rail-line">
               <Download className="size-3.5" /> Exportar
             </button>
-            <button onClick={() => importer.current?.click()} className="flex items-center justify-center gap-1.5 rounded-[3px] border border-rail-line px-2 py-2 text-[12.5px] text-rail-foreground transition-colors hover:bg-rail-line">
+            <button onClick={() => importer.current?.click()} className="flex items-center justify-center gap-1.5 rounded-md border border-rail-line px-2 py-2 text-caption text-rail-foreground transition-colors hover:bg-rail-line">
               <Upload className="size-3.5" /> Importar
             </button>
           </div>
@@ -243,11 +244,11 @@ function Shell() {
           <span className="font-display text-2xl font-semibold lowercase leading-none tracking-[-0.03em]">faro</span>
         </div>
         <div className="flex gap-1.5">
-          <button onClick={() => go('lector')} aria-label="Lector de markdown" className="rounded-[3px] border border-rail-line p-2 hover:bg-rail-line"><BookOpenText className="size-4" /></button>
-          <button onClick={() => go('configuracion')} aria-label="Configuración" className="rounded-[3px] border border-rail-line p-2 hover:bg-rail-line"><Settings className="size-4" /></button>
-          <button onClick={() => go('introduccion')} aria-label="Guía de inicio" className="rounded-[3px] border border-rail-line p-2 hover:bg-rail-line"><BookOpen className="size-4" /></button>
-          <button onClick={exportData} aria-label="Exportar copia JSON" className="rounded-[3px] border border-rail-line p-2 hover:bg-rail-line"><Download className="size-4" /></button>
-          <button onClick={() => importer.current?.click()} aria-label="Importar copia" className="rounded-[3px] border border-rail-line p-2 hover:bg-rail-line"><Upload className="size-4" /></button>
+          <button onClick={() => go('lector')} aria-label="Lector de markdown" className="rounded-md border border-rail-line p-2 hover:bg-rail-line"><BookOpenText className="size-4" /></button>
+          <button onClick={() => go('configuracion')} aria-label="Configuración" className="rounded-md border border-rail-line p-2 hover:bg-rail-line"><Settings className="size-4" /></button>
+          <button onClick={() => go('introduccion')} aria-label="Guía de inicio" className="rounded-md border border-rail-line p-2 hover:bg-rail-line"><BookOpen className="size-4" /></button>
+          <button onClick={exportData} aria-label="Exportar copia JSON" className="rounded-md border border-rail-line p-2 hover:bg-rail-line"><Download className="size-4" /></button>
+          <button onClick={() => importer.current?.click()} aria-label="Importar copia" className="rounded-md border border-rail-line p-2 hover:bg-rail-line"><Upload className="size-4" /></button>
         </div>
       </div>
       <input ref={importer} hidden type="file" accept="application/json" onChange={(e) => void onImport(e)} />
@@ -273,7 +274,7 @@ function Shell() {
             {tab === 'configuracion' && <Configuracion hidden={hidden} setHidden={setHidden} />}
             {tab === 'semana' && <Semana date={week} setDate={setWeek} />}
           </div>
-          <p className="mt-16 border-t border-border pt-4 font-mono text-[11px] text-muted-foreground lg:hidden" role="status">{status}</p>
+          <p className="mt-16 border-t border-border pt-4 font-mono text-micro text-muted-foreground lg:hidden" role="status">{status}</p>
         </div>
       </main>
 
@@ -286,12 +287,12 @@ function Shell() {
               key={n.id}
               onClick={() => go(n.id)}
               aria-current={on ? 'page' : undefined}
-              className={cn('relative flex flex-col items-center gap-1 px-1 pb-3 pt-2.5 text-[11px] font-medium [&_svg]:size-5', on ? 'text-rail-foreground' : 'text-rail-muted')}
+              className={cn('relative flex flex-col items-center gap-1 px-1 pb-3 pt-2.5 text-micro font-medium [&_svg]:size-5', on ? 'text-rail-foreground' : 'text-rail-muted')}
             >
-              <span aria-hidden className={cn('absolute inset-x-5 top-0 h-[3px] rounded-b-[2px]', on ? 'bg-beam' : 'bg-transparent')} />
+              <span aria-hidden className={cn('absolute inset-x-5 top-0 h-[3px] rounded-b-sm', on ? 'bg-beam' : 'bg-transparent')} />
               {n.icon}
               {n.short}
-              {n.count ? <span className={cn('tnum absolute right-[18%] top-1.5 rounded-[2px] px-1 py-px font-mono text-[10px] leading-none', n.alert ? 'bg-danger text-white' : 'bg-rail-line')}>{n.count}</span> : null}
+              {n.count ? <span className={cn('tnum absolute right-[18%] top-1.5 rounded-sm px-1 py-px font-mono text-micro leading-none', n.alert ? 'bg-danger text-white' : 'bg-rail-line')}>{n.count}</span> : null}
             </button>
           )
         })}
@@ -335,7 +336,7 @@ export default function App() {
         <p className="mt-3 leading-relaxed text-rail-muted">
           Esta pestaña tiene una versión anterior de la interfaz y los datos ya cambiaron de formato. Recárgala para continuar; no se perdió nada.
         </p>
-        <button onClick={() => window.location.reload()} className="mt-6 rounded-[3px] bg-beam px-5 py-2.5 font-semibold text-beam-ink hover:bg-beam/85">
+        <button onClick={() => window.location.reload()} className="mt-6 rounded-md bg-beam px-5 py-2.5 font-semibold text-beam-ink hover:bg-beam/85">
           Recargar
         </button>
       </Gate>
@@ -347,8 +348,8 @@ export default function App() {
         <p className="mt-3 leading-relaxed text-rail-muted">
           La interfaz no pudo conectar con el servidor local, que es quien guarda tus datos. Inícialo y reintenta:
         </p>
-        <pre className="mt-4 rounded-[3px] border border-rail-line bg-black/30 px-4 py-3 font-mono text-sm">pnpm start</pre>
-        <button onClick={() => void loadFaro()} className="mt-6 rounded-[3px] bg-beam px-5 py-2.5 font-semibold text-beam-ink hover:bg-beam/85">
+        <pre className="mt-4 rounded-md border border-rail-line bg-black/30 px-4 py-3 font-mono text-sm">pnpm start</pre>
+        <button onClick={() => void loadFaro()} className="mt-6 rounded-md bg-beam px-5 py-2.5 font-semibold text-beam-ink hover:bg-beam/85">
           Reintentar
         </button>
       </Gate>

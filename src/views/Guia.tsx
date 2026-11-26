@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import * as T from '@radix-ui/react-tabs'
 import { cn } from '@/lib/utils'
+import { getAgentContext, getAgentInstructions, getHealth, postAgentDecision } from '@/lib/api'
 import { useDialogs } from '@/lib/dialogs'
 import { useFaro } from '@/lib/faro'
 import { Callout, Chip, Pick, PageHeader } from '@/components/faro/bits'
@@ -65,7 +66,7 @@ function CodeBlock({ text, label }: { text: string; label?: string }) {
   const { copyText } = useDialogs()
   return (
     <div className="relative">
-      <pre className="max-h-[28rem] overflow-auto rounded-[3px] bg-rail p-4 pr-14 font-mono text-[12.5px] leading-relaxed text-rail-foreground">{text}</pre>
+      <pre className="max-h-[28rem] overflow-auto rounded-md bg-rail p-4 pr-14 font-mono text-caption leading-relaxed text-rail-foreground">{text}</pre>
       <Button
         size="icon"
         variant="ghost"
@@ -91,8 +92,8 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
     </section>
   )
 }
-const P = ({ children }: { children: ReactNode }) => <p className="max-w-3xl text-[15px] leading-relaxed">{children}</p>
-const Code = ({ children }: { children: ReactNode }) => <code className="rounded-[2px] bg-secondary px-1.5 py-0.5 font-mono text-[0.85em]">{children}</code>
+const P = ({ children }: { children: ReactNode }) => <p className="max-w-3xl text-body leading-relaxed">{children}</p>
+const Code = ({ children }: { children: ReactNode }) => <code className="rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-[0.85em]">{children}</code>
 
 /* ---------- Setup ---------- */
 function Setup({ go }: { go: (tab: string) => void }) {
@@ -111,9 +112,8 @@ function Setup({ go }: { go: (tab: string) => void }) {
   const base = typeof window === 'undefined' ? 'http://localhost:4317' : window.location.origin
 
   useEffect(() => {
-    fetch('/api/health')
-      .then((r) => r.json())
-      .then((j) => setAppDir(j.appDir ?? ''))
+    getHealth()
+      .then(({ body }) => setAppDir(body.appDir ?? ''))
       .catch(() => setAppDir(''))
   }, [])
 
@@ -121,8 +121,7 @@ function Setup({ go }: { go: (tab: string) => void }) {
   const linkKey = linked.map((f) => f!.slug).join(',')
   useEffect(() => {
     let alive = true
-    fetch('/api/agent/instructions' + (project ? `?project=${encodeURIComponent(project.name)}` : ''))
-      .then((r) => r.text())
+    getAgentInstructions(project?.name)
       .then((t) => alive && setAgentsBlock(t))
       .catch(() => alive && setAgentsBlock(''))
     return () => {
@@ -181,12 +180,12 @@ function Setup({ go }: { go: (tab: string) => void }) {
             </div>
           )}
         </div>
-        <ul className="grid gap-px overflow-hidden rounded-[3px] border bg-border">
+        <ul className="grid gap-px overflow-hidden rounded-md border bg-border">
           {checks.map((c) => (
             <li key={c.label} className="flex flex-wrap items-center gap-x-4 gap-y-2 bg-card px-5 py-3.5">
               {c.done ? <CircleCheck className="size-5 shrink-0 text-ok" /> : <Circle className="size-5 shrink-0 text-muted-foreground/60" />}
               <div className="min-w-0 flex-1">
-                <p className={cn('text-[15px] font-semibold leading-snug', c.done && 'text-ok')}>{c.label}</p>
+                <p className={cn('text-body font-semibold leading-snug', c.done && 'text-ok')}>{c.label}</p>
                 <p className="text-sm leading-snug text-muted-foreground">{c.detail}</p>
               </div>
               {!c.done && c.action && (
@@ -210,7 +209,7 @@ function Setup({ go }: { go: (tab: string) => void }) {
           <Button variant="outline" size="sm" onClick={() => go('frentes')}>Ir a Frentes</Button>
           <Button variant="outline" size="sm" onClick={() => go('repositorios')}>Ir a Repositorios</Button>
         </div>
-        <Callout className="max-w-3xl text-[14px]">Un repositorio puede tener varios frentes y un frente puede estar en varios repositorios: repite el vínculo las veces que haga falta.</Callout>
+        <Callout className="max-w-3xl text-sm">Un repositorio puede tener varios frentes y un frente puede estar en varios repositorios: repite el vínculo las veces que haga falta.</Callout>
       </Step>
 
       <Step n={2} title="Pon AGENTS.md en el repositorio">
@@ -277,12 +276,12 @@ function Setup({ go }: { go: (tab: string) => void }) {
           text={`Trabaja en el frente ${slugs[0]}: implementa el siguiente verificable de docs/${slugs[0]}/plan.md. Sigue las instrucciones de AGENTS.md.`}
           label="Copiar prompt"
         />
-        <ol className="grid max-w-3xl list-decimal gap-2 pl-5 text-[15px] leading-relaxed marker:font-mono">
+        <ol className="grid max-w-3xl list-decimal gap-2 pl-5 text-body leading-relaxed marker:font-mono">
           <li>El agente consulta las decisiones vigentes del repositorio y lee <Code>progreso.md</Code> («Retomar aquí»).</li>
           <li>Si le falta una regla de negocio y avanza con un supuesto, lo <b className="font-semibold">registra en FARO</b>; en el código solo deja el código <Code>DEC-000x</Code>.</li>
           <li>Al terminar reescribe «Retomar aquí» y añade una entrada a la bitácora.</li>
         </ol>
-        <Callout tone="ok" className="max-w-3xl text-[14px]">
+        <Callout tone="ok" className="max-w-3xl text-sm">
           Tú lo ves en <b className="font-semibold">Dudas y decisiones</b>: la decisión aparece sola, «en supuesto», con el chip del agente que la registró. Cuando hables con el PO, la resuelves ahí.
         </Callout>
         <div>
@@ -302,9 +301,8 @@ function ConnectionTest({ project, front, base }: { project?: string; front: str
   async function probe() {
     setBusy(true)
     try {
-      const r = await fetch(`/api/agent/context${q}`)
-      const j = await r.json()
-      if (!r.ok) throw Object.assign(new Error(j.error), { options: j.options })
+      const { ok, body: j } = await getAgentContext(project)
+      if (!ok) throw Object.assign(new Error(j.error), { options: j.options })
       const fr = j.repository?.fronts?.length ? j.repository.fronts.join(', ') : 'ninguno todavía'
       setOut({ tone: 'ok', text: project ? `FARO responde y reconoce el repositorio «${project}». Frentes vinculados: ${fr}.` : `FARO responde. Frentes: ${j.fronts.map((f: { slug: string }) => f.slug).join(', ') || 'ninguno'}.` })
     } catch (e) {
@@ -319,15 +317,10 @@ function ConnectionTest({ project, front, base }: { project?: string; front: str
     if (!project) return void toast.error('Primero crea un repositorio')
     setBusy(true)
     try {
-      const r = await fetch('/api/agent/decisions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ repository: project, front, question: 'Prueba de conexión: puedes borrar esta decisión', assumption: 'Ninguno', impact: 'bajo', origin: 'prueba', key: 'prueba-conexion' }),
-      })
-      const j = await r.json()
-      if (r.ok) toast.success(`${j.code} ${j.duplicate ? 'ya existía' : 'registrada'}`, { description: 'Bórrala en Dudas y decisiones cuando quieras.' })
+      const { ok, body: j } = await postAgentDecision({ repository: project, front, question: 'Prueba de conexión: puedes borrar esta decisión', assumption: 'Ninguno', impact: 'bajo', origin: 'prueba', key: 'prueba-conexion' })
+      if (ok) toast.success(`${j.code} ${j.duplicate ? 'ya existía' : 'registrada'}`, { description: 'Bórrala en Dudas y decisiones cuando quieras.' })
       setOut(
-        r.ok
+        ok
           ? { tone: 'ok', text: `El registro funciona: ${j.code}${j.duplicate ? ' (ya existía)' : ''}. Bórrala en «Dudas y decisiones» > Eliminar.` }
           : { tone: 'danger', text: `${j.error}${j.options ? ` Opciones: ${j.options.map((o: { frontSlug?: string } | string) => (typeof o === 'string' ? o : o.frontSlug)).join(', ')}.` : ''}` },
       )
@@ -351,7 +344,7 @@ function ConnectionTest({ project, front, base }: { project?: string; front: str
         </Button>
       </div>
       {out && (
-        <Callout tone={out.tone === 'ok' ? 'ok' : 'danger'} className="max-w-3xl text-[14px]">
+        <Callout tone={out.tone === 'ok' ? 'ok' : 'danger'} className="max-w-3xl text-sm">
           {out.text}
         </Callout>
       )}
@@ -389,7 +382,7 @@ function Ejemplo() {
           Así queda el source de un repositorio al que ya se le configuró la conexión con FARO. Es el repositorio <Code>erp-api</Code>, ligado al frente <Code>ERP en Efactura</Code> (tarea <Code>Cartera por pagar</Code>). El contenido es <b className="font-semibold">ficticio</b> pero tiene la forma real: haz clic en un archivo para verlo.
         </P>
         <div className="mt-6 grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
-          <nav aria-label="Archivos del ejemplo" className="self-start rounded-[3px] border bg-card py-2 font-mono text-[13px]">
+          <nav aria-label="Archivos del ejemplo" className="self-start rounded-md border bg-card py-2 font-mono text-small">
             <ul>
               {tree.map((t) => (
                 <li key={t.label + t.depth}>
@@ -419,10 +412,10 @@ function Ejemplo() {
                 <ClipboardCopy /> Copiar
               </Button>
             </div>
-            <pre className="max-h-[34rem] overflow-auto whitespace-pre-wrap rounded-[3px] border bg-card p-5 font-mono text-[12.5px] leading-relaxed">{current.content}</pre>
+            <pre className="max-h-[34rem] overflow-auto whitespace-pre-wrap rounded-md border bg-card p-5 font-mono text-caption leading-relaxed">{current.content}</pre>
           </div>
         </div>
-        <Callout className="mt-6 max-w-3xl text-[14px]">
+        <Callout className="mt-6 max-w-3xl text-sm">
           Fíjate en dos cosas: las decisiones aparecen solo por su código (<Code>DEC-0001</Code>), y <Code>progreso.md</Code> cuenta qué se hizo sin afirmar que algo está verificado: eso solo se dice en FARO.
         </Callout>
       </section>

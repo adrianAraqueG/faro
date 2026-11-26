@@ -62,7 +62,7 @@ export function ScopeFields({ value, onChange }: { value: ScopeValue; onChange: 
         </fieldset>
       )}
       {newLinks.length > 0 && front && (
-        <p className="font-mono text-[11.5px] leading-snug text-muted-foreground">
+        <p className="font-mono text-micro leading-snug text-muted-foreground">
           Se vinculará el frente «{front.name}» con {newLinks.map((p) => `«${p!.name}»`).join(', ')}.
         </p>
       )}

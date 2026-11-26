@@ -8,10 +8,10 @@ import {
   removeFromPlan, moveInAchieved, moveInPlan, setExtras, setTomorrow, tasksOf, useFaro,
 } from '@/lib/faro'
 import { Callout, Empty, Field, PageHeader, Section } from '@/components/faro/bits'
+import { longDate } from '@/lib/format'
 import { DayList, DayTask } from '@/components/faro/DayTask'
 import { TaskPicker } from '@/components/faro/TaskPicker'
 
-const longDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
 
 export function Hoy({ date, setDate }: { date: string; setDate: (d: string) => void }) {
   const { db } = useFaro()
@@ -32,7 +32,7 @@ export function Hoy({ date, setDate }: { date: string; setDate: (d: string) => v
         actions={
           <div className="flex items-center gap-2">
             <label htmlFor="dayDate" className="eyebrow">Fecha</label>
-            <Input id="dayDate" type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className="w-auto font-mono text-[13px]" />
+            <Input id="dayDate" type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className="w-auto font-mono text-small" />
           </div>
         }
       />

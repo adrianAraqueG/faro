@@ -7,7 +7,7 @@ function Item({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
       <h3 className="font-display text-lg font-semibold">{title}</h3>
-      <p className="mt-1 text-[15px] leading-relaxed text-muted-foreground">{children}</p>
+      <p className="mt-1 text-body leading-relaxed text-muted-foreground">{children}</p>
     </div>
   )
 }
@@ -23,7 +23,7 @@ export function Introduccion({ go }: { go: (tab: string) => void }) {
 
       <div className="grid max-w-3xl gap-14">
         <Section title="La idea en corto" hint="Tres niveles, de mayor a menor.">
-          <ul className="grid gap-3 text-[15px] leading-relaxed">
+          <ul className="grid gap-3 text-body leading-relaxed">
             <li><strong>Frente:</strong> una gran área de trabajo (Contabilidad, ERP en Efactura…).</li>
             <li><strong>Tarea:</strong> un trabajo dentro de un frente. Puede tener subtareas con la profundidad que necesites.</li>
             <li><strong>Día:</strong> cada mañana eliges tareas de tus frentes para hoy, y al cerrar registras lo que lograste.</li>
@@ -54,7 +54,7 @@ export function Introduccion({ go }: { go: (tab: string) => void }) {
           </div>
         </Section>
 
-        <p className="text-[15px] text-muted-foreground">
+        <p className="text-body text-muted-foreground">
           ¿Trabajas con agentes de IA en tus repositorios?{' '}
           <button onClick={() => go('guia')} className="font-semibold text-foreground underline underline-offset-4 hover:text-tide">
             Aprende a conectarlos con FARO

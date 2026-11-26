@@ -32,7 +32,7 @@ export function Semana({ date, setDate }: { date: string; setDate: (d: string) =
         actions={
           <div className="flex items-center gap-2">
             <label htmlFor="weekDate" className="eyebrow">Semana de</label>
-            <Input id="weekDate" type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className="w-auto font-mono text-[13px]" />
+            <Input id="weekDate" type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className="w-auto font-mono text-small" />
           </div>
         }
       />
@@ -61,7 +61,7 @@ export function Semana({ date, setDate }: { date: string; setDate: (d: string) =
         </Section>
 
         <Section title="Lectura del lanzamiento">
-          <div className="grid gap-4 text-[15px] leading-relaxed">
+          <div className="grid gap-4 text-body leading-relaxed">
             <p>
               <b className="tnum font-display text-lg">{m.confirmed}</b> tareas verificables marcadas como alcance confirmado ·{' '}
               <b className="tnum font-display text-lg">{m.candidate}</b> candidatos pendientes de priorización.
@@ -97,7 +97,7 @@ export function Semana({ date, setDate }: { date: string; setDate: (d: string) =
           <ol className="grid gap-0">
             {m.days.map(([k, d]) => (
               <li key={k} className="grid gap-x-5 gap-y-1 border-b border-border py-3 last:border-b-0 sm:grid-cols-[110px_minmax(0,1fr)]">
-                <time className="tnum font-mono text-[12.5px] font-medium">{k}</time>
+                <time className="tnum font-mono text-caption font-medium">{k}</time>
                 <div className="text-sm leading-snug">
                   <p className="text-muted-foreground"><span className="eyebrow mr-2">Plan</span>{tasksOf(planIds(d)).map((t) => t.title).join(' · ') || 'Sin plan'}</p>
                   <p className="mt-1"><span className="eyebrow mr-2">Logrado</span>{tasksOf(d.achieved).map((t) => t.title).join(' · ') || 'Sin cierre'}</p>

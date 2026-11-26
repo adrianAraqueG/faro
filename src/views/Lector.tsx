@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useDialogs } from '@/lib/dialogs'
+import { num } from '@/lib/format'
 import { PageHeader } from '@/components/faro/bits'
 import { Markdown } from '@/components/faro/Markdown'
 import { ShareReader } from '@/components/faro/ShareReader'
@@ -62,7 +63,7 @@ function TocList({ items, active }: { items: Heading[]; active: string }) {
             aria-current={active === i.id ? 'location' : undefined}
             style={{ paddingLeft: (i.level - base) * 12 + 12 }}
             className={cn(
-              '-ml-px block border-l-2 py-1 pr-2 text-[13px] leading-snug transition-colors',
+              '-ml-px block border-l-2 py-1 pr-2 text-small leading-snug transition-colors',
               active === i.id ? 'border-beam font-semibold text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground',
             )}
           >
@@ -160,7 +161,7 @@ export function Lector() {
         <div className="2xl:grid 2xl:grid-cols-[minmax(0,1fr)_15rem] 2xl:gap-10">
           <div className="min-w-0">
             {items.length > 1 && (
-              <details className="mb-5 max-w-[62rem] rounded-[3px] border bg-card px-4 py-3 2xl:hidden">
+              <details className="mb-5 max-w-[62rem] rounded-md border bg-card px-4 py-3 2xl:hidden">
                 <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold">
                   <List className="size-4" /> Contenido
                 </summary>
@@ -170,12 +171,12 @@ export function Lector() {
               </details>
             )}
             {/* La hoja: el documento ajeno, en su propia superficie y con su propia barra */}
-            <article className="max-w-[62rem] rounded-[3px] border bg-card shadow-[0_1px_2px_hsl(var(--ink)/0.06),0_16px_36px_-16px_hsl(var(--ink)/0.18)]">
-              <div className="sticky top-14 z-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-t-[3px] border-b bg-card/95 px-5 py-3 backdrop-blur sm:px-8 lg:top-0">
+            <article className="max-w-[62rem] rounded-md border bg-card shadow-[0_1px_2px_hsl(var(--ink)/0.06),0_16px_36px_-16px_hsl(var(--ink)/0.18)]">
+              <div className="sticky top-14 z-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-t-md border-b bg-card/95 px-5 py-3 backdrop-blur sm:px-8 lg:top-0">
                 <div className="min-w-0">
-                  <p className="truncate font-sans text-[15px] font-semibold leading-tight">{docTitle}</p>
+                  <p className="truncate font-sans text-body font-semibold leading-tight">{docTitle}</p>
                   <p className="tnum mt-0.5 text-xs text-muted-foreground">
-                    {words.toLocaleString('es-CO')} palabras · {minutes} min de lectura
+                    {num(words)} palabras · {minutes} min de lectura
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -216,7 +217,7 @@ export function Lector() {
             setOver(false)
             void readFile(e.dataTransfer.files[0])
           }}
-          className={cn('grid max-w-4xl gap-4 rounded-[3px] border-2 border-dashed p-5 transition-colors', over ? 'border-beam bg-beam-soft' : 'border-input bg-card')}
+          className={cn('grid max-w-4xl gap-4 rounded-md border-2 border-dashed p-5 transition-colors', over ? 'border-beam bg-beam-soft' : 'border-input bg-card')}
         >
           <div className="sticky top-14 z-10 -mx-5 -mt-5 border-b bg-card px-5 py-3 lg:top-0">{toolbar}</div>
           <textarea
@@ -235,7 +236,7 @@ export function Lector() {
             aria-label="Markdown a leer"
             placeholder="Pega aquí el markdown (Ctrl+V) o arrastra un archivo .md…"
             spellCheck={false}
-            className="min-h-[18rem] w-full resize-y rounded-[3px] bg-transparent p-2 font-mono text-[13px] leading-relaxed outline-none placeholder:text-muted-foreground"
+            className="min-h-[18rem] w-full resize-y rounded-md bg-transparent p-2 font-mono text-small leading-relaxed outline-none placeholder:text-muted-foreground"
           />
           {toolbar}
         </section>

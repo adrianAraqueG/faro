@@ -25,13 +25,13 @@ export function DecisionItem({ decision: d, compact = false }: { decision: Decis
         // El título es el control accesible (teclado); el clic en cualquier otra parte de la tarjeta hace lo mismo.
         onClick={(e) => !(e.target as HTMLElement).closest('button, a') && setDetail(true)}
         className={cn(
-          'animate-rise cursor-pointer rounded-[3px] border border-l-[3px] bg-card px-5 py-4 transition-colors hover:bg-accent/30',
+          'animate-rise cursor-pointer rounded-md border border-l-[3px] bg-card px-5 py-4 transition-colors hover:bg-accent/30',
           d.state === 'resuelta' ? 'border-l-ok' : impactBar[d.impact],
         )}
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <p className="mb-1 font-mono text-[11px] font-medium tracking-[0.06em] text-muted-foreground">{d.code}</p>
+            <p className="mb-1 font-mono text-micro font-medium tracking-[0.06em] text-muted-foreground">{d.code}</p>
             <h4 className="font-sans text-base font-semibold leading-snug tracking-normal">
               <button type="button" onClick={() => setDetail(true)} className="text-left hover:underline focus-visible:underline focus-visible:outline-none">
                 {d.question}
@@ -51,7 +51,7 @@ export function DecisionItem({ decision: d, compact = false }: { decision: Decis
           </div>
         )}
 
-        <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11.5px] leading-snug text-muted-foreground">
+        <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-micro leading-snug text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <MapPin className="size-3" />
             {front ? [front.name, ...(task ? taskPath(task) : [])].join(' › ') : 'Sin frente'}

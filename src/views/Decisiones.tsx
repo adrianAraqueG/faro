@@ -41,7 +41,7 @@ export function Decisiones() {
       <div className="grid gap-x-16 gap-y-16 min-[1400px]:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <Section
           title="Cola de decisiones"
-          aside={<span className="tnum font-mono text-[12px] text-muted-foreground">{openCount} abierta(s) · {db.decisions.length} en total</span>}
+          aside={<span className="tnum font-mono text-caption text-muted-foreground">{openCount} abierta(s) · {db.decisions.length} en total</span>}
         >
           <div className="mb-6 flex flex-wrap gap-2.5">
             <Pick

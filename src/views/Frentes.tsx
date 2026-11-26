@@ -50,7 +50,7 @@ export function Frentes({ day }: { day: string }) {
           <Checkbox checked={hideDone} onCheckedChange={(on) => setHideDone(on === true)} />
           Ocultar lo terminado
         </label>
-        <p className="tnum font-mono text-[12px] text-muted-foreground">
+        <p className="tnum font-mono text-caption text-muted-foreground">
           {db.fronts.length} frentes · {db.tasks.filter((t) => t.kind !== 'texto').length} tareas
         </p>
       </div>
@@ -98,16 +98,16 @@ function FrontSection({ front, open, onOpenChange, hideDone, day }: { front: Fro
   return (
     <Collapsible open={open} onOpenChange={onOpenChange} className="border-t-2 border-ink pt-4">
       <div className="flex items-start gap-2">
-        <CollapsibleTrigger className="group flex min-w-0 flex-1 items-start gap-3 rounded-[3px] py-1 text-left">
+        <CollapsibleTrigger className="group flex min-w-0 flex-1 items-start gap-3 rounded-md py-1 text-left">
           <ChevronRight className="mt-2 size-5 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
           <span className="min-w-0">
             <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="font-display text-2xl font-semibold leading-tight">{front.name}</span>
-              <code className="rounded-[2px] bg-secondary px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground" title="Nombre de la carpeta docs/ en los repositorios">
+              <code className="rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-micro text-muted-foreground" title="Nombre de la carpeta docs/ en los repositorios">
                 {front.slug}
               </code>
             </span>
-            <span className="tnum mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12px] text-muted-foreground">
+            <span className="tnum mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-caption text-muted-foreground">
               <span>{total} tarea(s)</span>
               {sums.total > 0 && (
                 <span>
@@ -222,7 +222,7 @@ function ImportForm({ onClose }: { onClose: () => void }) {
         <p className="eyebrow">Importar</p>
         <DialogTitle>Importar desde texto</DialogTitle>
         <DialogDescription>
-          Pega tu bloc de notas. Una línea que termina en «:» abre un frente (<code className="font-mono text-[12px]">FRENTE ERP:</code>); cada <code className="font-mono text-[12px]">-&gt;</code> es una tarea y los tabuladores bajan de nivel. «CANCELADO:» al inicio la deja cancelada.
+          Pega tu bloc de notas. Una línea que termina en «:» abre un frente (<code className="font-mono text-caption">FRENTE ERP:</code>); cada <code className="font-mono text-caption">-&gt;</code> es una tarea y los tabuladores bajan de nivel. «CANCELADO:» al inicio la deja cancelada.
         </DialogDescription>
       </DialogHeader>
 
@@ -233,14 +233,14 @@ function ImportForm({ onClose }: { onClose: () => void }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={'FRENTE GENERAL:\n-> Publicar documentación\n\t-> Revisar la sección de usuarios'}
-          className="min-h-[170px] font-mono text-[13px] leading-snug"
+          className="min-h-[170px] font-mono text-small leading-snug"
           spellCheck={false}
         />
       </Field>
 
       {(stats.tasks > 0 || stats.fronts > 0) && (
         <div className="grid gap-3">
-          <p className="tnum font-mono text-[12px] text-muted-foreground">
+          <p className="tnum font-mono text-caption text-muted-foreground">
             {stats.fronts} frente(s) · {stats.tasks} tarea(s)
             {stats.cancelled > 0 && ` · ${stats.cancelled} cancelada(s)`}
             {stats.questions > 0 && ` · ${stats.questions} duda(s) detectada(s)`}
@@ -259,7 +259,7 @@ function ImportForm({ onClose }: { onClose: () => void }) {
               <Pick label="Frente por defecto" value={frontId} onChange={setFrontId} options={db.fronts.map((f) => ({ value: f.id, label: f.name }))} className="max-w-xs" />
             </Field>
           )}
-          <p className="text-[13px] leading-snug text-muted-foreground">Si una tarea ya existe en el mismo lugar, se reutiliza: puedes importar de nuevo sin duplicar.</p>
+          <p className="text-small leading-snug text-muted-foreground">Si una tarea ya existe en el mismo lugar, se reutiliza: puedes importar de nuevo sin duplicar.</p>
         </div>
       )}
 
@@ -279,24 +279,24 @@ function PreviewTree({
 }: { groups: OutlineGroup[]; exists: (name: string) => boolean; targetOf: (g: OutlineGroup, i: number) => string; onChoose: (i: number, frontId: string) => void }) {
   const { db } = useFaro()
   return (
-    <div className="max-h-64 overflow-auto rounded-[3px] border bg-secondary/40 p-3 text-[13px] leading-snug">
+    <div className="max-h-64 overflow-auto rounded-md border bg-secondary/40 p-3 text-small leading-snug">
       {groups.map((g, gi) => (
         <div key={gi} className="mb-3 last:mb-0">
           <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <p className="font-display text-[15px] font-semibold">
+            <p className="font-display text-body font-semibold">
               {g.front ?? 'Sin frente indicado'}
-              {g.front && exists(g.front) && <span className="ml-2 font-mono text-[10.5px] font-normal uppercase tracking-[0.08em] text-muted-foreground">existe</span>}
+              {g.front && exists(g.front) && <span className="ml-2 font-mono text-micro font-normal uppercase tracking-[0.08em] text-muted-foreground">existe</span>}
             </p>
             {g.front && !exists(g.front) && (
               <span className="flex items-center gap-2">
-                <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">va a</span>
+                <span className="font-mono text-micro uppercase tracking-[0.08em] text-muted-foreground">va a</span>
                 <Pick
                   label={`Frente de destino para «${g.front}»`}
                   value={targetOf(g, gi)}
                   onChange={(id) => onChoose(gi, id)}
                   options={[{ value: '', label: `Crear frente «${g.front}»` }, ...db.fronts.map((f) => ({ value: f.id, label: f.name }))]}
                   className="w-60"
-                  triggerClassName="h-8 bg-card text-[13px]"
+                  triggerClassName="h-8 bg-card text-small"
                 />
               </span>
             )}
@@ -306,7 +306,7 @@ function PreviewTree({
               <li key={i} style={{ paddingLeft: n.depth * 16 }} className={n.status === 'cancelada' ? 'text-muted-foreground line-through' : ''}>
                 <span className="mr-1.5 text-muted-foreground">{n.depth ? '└' : '•'}</span>
                 {n.title}
-                {n.question && <span className="ml-1.5 font-mono text-[10.5px] text-warn">¿duda?</span>}
+                {n.question && <span className="ml-1.5 font-mono text-micro text-warn">¿duda?</span>}
               </li>
             ))}
           </ul>

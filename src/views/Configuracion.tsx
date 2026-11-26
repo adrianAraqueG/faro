@@ -22,7 +22,7 @@ export function Configuracion({ hidden, setHidden }: { hidden: string[]; setHidd
             const visible = !hidden.includes(m.id)
             return (
               <li key={m.id} className="flex items-center justify-between gap-4 py-3.5">
-                <label htmlFor={`menu-${m.id}`} className="flex-1 cursor-pointer text-[15px] font-medium">{m.label}</label>
+                <label htmlFor={`menu-${m.id}`} className="flex-1 cursor-pointer text-body font-medium">{m.label}</label>
                 <span className="eyebrow">{visible ? 'Visible' : 'Oculta'}</span>
                 {/* Siempre debe quedar al menos una opción visible */}
                 <Switch id={`menu-${m.id}`} checked={visible} disabled={visible && shown === 1} onCheckedChange={(v) => toggle(m.id, v)} />
